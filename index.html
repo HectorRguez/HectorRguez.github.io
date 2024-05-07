@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision Maker</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        margin: 50px auto;
+        width: 80%;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 10px;
+        cursor: pointer;
+    }
+    #option1, #option2 {
+        display: block;
+        margin: 10px auto;
+    }
+    @keyframes slideDown {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100%); opacity: 0; }
+    }
+    @keyframes slideFromTop {
+    0% { transform: translateY(-100%); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+    }
+
+.button-animation {
+    animation: slideFromTop 1s forwards;
+}
+
+
+.title-animation {
+    animation: slideDown 1s forwards;
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="title">Tu lenguaje del amor</h1>
+    <button id="startButton" onclick="startQuiz()">Comienza el cuestionario</button>
+    <div id="options" style="display: none;">
+        <button onclick="chooseOption()" id="option1">Option 1</button>
+        <button onclick="chooseOption()" id="option2">Option 2</button>
+    </div>
+    <h1 id="result"></h1>
+</div>
+
+<script>
+    var options = ["(A) Me gusta que mi pareja me mande mensajes cursis de vez en cuando",
+    "(E) Me gusta que mi pareja me toque la pierna cuando vamos en el coche",
+    "Me gusta estar a solas con mi pareja, dedicándonos tiempo el uno al otro (B)",
+    "Me siento querido/a cuando mi pareja me hace algo de comer (D)",
+    "Me gusta que mi pareja me regale cosas aunque no sea un día especial (C)",
+    "Me gusta que mi pareja me organice planes sorpresa (B)",
+    "Me siento querido/a cuando mi pareja me ayuda en alguno de mis proyectos/tareas (D)",
+    "Me gusta que mi pareja me haga mimos antes de dormir (E)",
+    "Me gusta que mi pareja esté siempre cerca físicamente; que me dé la mano, me acaricie la espalda...  (E)",
+    "Me gusta que mi pareja me sorprenda con algún detalle de vez en cuando (C)",
+    "Me gusta que mi pareja saque tiempo para ir de cita (B)",
+    "Me gusta que mi pareja y yo andemos de la mano por la calle (E)",
+    "Me gusta que mi pareja me regale cosas, aunque no sean materiales; un cuadro pintado por él/ella, una carta, etc. (C)",
+    "Me encanta que mi pareja me diga a menudo que me quiere, aunque no sea ningún día especial (A)",
+    "Me gusta que mi pareja se siente junto a mí cuando salimos a comer (E)",
+    "Me gusta que mi pareja me diga que me veo muy bien cuando me compro ropa nueva, me peino de manera diferente... (A)",
+    "Valoro mucho que mi pareja saque tiempo para hacer planes conmigo, especialmente cuando está muy ocupado (B)",
+    "Valoro mucho cualquier regalo que me da mi pareja aunque sea muy pequeño (C)",
+    "Siento que mi pareja me quiere cuando me dice que está orgulloso de mí (A)",
+    "Cuando mi pareja me ayuda, sé que lo hace porque me ama (D)"];
+
+    var types = [0, 5, 1, 4, 3, 2, 4, 5, 5, 3, 2, 5, 3, 5, 0, 1, 2, 0, 4];
+    var current_responses = [0, 0, 0, 0, 0];
+    var significados = ["Tu lenguaje del amor son las palabras",
+                         "Tu lenguaje del amor es pasar tiempo de calidad",
+                          "Tu lenguaje del amor es dar regalos",
+                           "Tu lenguaje del amor es hacer actos de servicio",
+                            "Tu lenguaje del amor es el contacto físico"];
+    var currentIndex = 0;
+
+    function startQuiz() {
+        document.getElementById("title").classList.add("title-animation"); // Add animation class to title
+        document.getElementById("options").classList.add("button-animation"); // Add animation class to buttons
+        document.getElementById("title").style.display = "none"; // Add animation class to title
+        document.getElementById("startButton").style.display = "none";
+        document.getElementById("options").style.display = "block";
+        document.getElementById("option1").innerHTML = options[currentIndex];
+        document.getElementById("option2").innerHTML = options[currentIndex + 1];
+    }
+
+    function chooseOption(choice) {
+        
+        if (choice == 1) {
+            var response = types[currentIndex];
+        } else if (choice == 2) {
+            var response = types[currentIndex+1];
+        }
+        current_responses[response]++;
+        currentIndex += 2;
+        if (currentIndex < options.length) {
+            document.getElementById("option1").innerHTML = options[currentIndex];
+            document.getElementById("option2").innerHTML = options[currentIndex + 1];
+        } else {
+            // Find the maximum
+            max_idx = 0;
+            max_val = current_responses[max_idx]
+            for(i = 1; i < current_responses.length; i++)
+            {
+                if(current_responses[i] > max_val)
+                {
+                    max_idx = i;
+                    max_val = current_responses[i];
+                }
+            }
+            document.getElementById("result").classList.add("button-animation"); // Add animation class to result
+            document.getElementById("options").style.display = "none";
+            document.getElementById("result").innerHTML += "<br>" +  significados[max_idx] + "</br>" ; 
+            document.getElementById("result").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>
