@@ -28,6 +28,14 @@ h1 {
     text-transform: uppercase; /* Convert text to uppercase */
     font-weight: 800; /* Make the text bold */
 }
+
+h3{
+    color: #ff4d4dac; /* Red for headings */
+    text-transform: uppercase; /* Convert text to uppercase */
+    font-weight: 600; /* Make the text bold */
+    font-size:23px;
+}
+
 button {
     font-family: 'Open Sans', sans-serif;
     padding: 10px 20px;
@@ -64,19 +72,18 @@ button {
 }
 
 
-
-    #option1, #option2 {
-        display: block;
-        margin: 10px auto;
-    }
-    @keyframes slideDown {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(100%); opacity: 0; }
-    }
-    @keyframes slideFromTop {
-    0% { transform: translateY(-100%); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-    }
+#option1, #option2 {
+    display: block;
+    margin: 10px auto;
+}
+@keyframes slideDown {
+0% { transform: translateY(0); }
+100% { transform: translateY(100%); opacity: 0; }
+}
+@keyframes slideFromTop {
+0% { transform: translateY(-100%); opacity: 0; }
+100% { transform: translateY(0); opacity: 1; }
+}
 
 .button-animation {
     animation: slideFromTop 1s forwards;
@@ -141,7 +148,10 @@ button {
         <button onclick="chooseOption(1)" id="option1">Option 1</button>
         <button onclick="chooseOption(2)" id="option2">Option 2</button>
     </div>
-    <h1 id="result"></h1>
+    <h2 id="results_com" style="display: none;">Top 3:</h2>
+    <h1 id="result1"></h1>
+    <h3 id="result2"></h3>
+    <h3 id="result3"></h3>
     <div class="message">Alba Clavijo Rodríguez</div>
 </div>
 
@@ -200,12 +210,12 @@ button {
     var types = [0, 4, 1, 3, 2, 1, 3, 4, 4, 2, 1, 4, 2, 0, 4, 0, 1, 2, 0, 3, 1, 0, 3, 4, 0, 2, 1, 
                     4, 0, 3, 2, 1, 3, 2, 0, 1, 4, 3, 3, 2, 1, 3, 4, 0, 2, 3, 1, 2, 4, 0];
 
-    var current_responses = [0, 0, 0, 0, 0, 0];
-    var significados = ["Tu lenguaje del amor son las palabras",
-                        "Tu lenguaje del amor es pasar tiempo de calidad",
-                        "Tu lenguaje del amor es dar regalos",
-                        "Tu lenguaje del amor es hacer actos de servicio",
-                        "Tu lenguaje del amor es el contacto físico"];
+    var current_responses = [0.01, 0.02, 0.03, 0.04, 0.05];
+    var significados = ["Palabras bonitas",
+                        "Pasar tiempo de calidad",
+                        "Recibir regalos",
+                        "Actos de servicio",
+                        "Contacto físico"];
     var currentIndex = 0;
 
     function startQuiz() {
@@ -217,6 +227,22 @@ button {
         document.getElementById("option1").innerHTML = options[currentIndex];
         document.getElementById("option2").innerHTML = options[currentIndex + 1];
     }
+
+    function getTop3Indexes(array) {
+    // Create a copy of the original array
+    const sortedArray = array.slice().sort((a, b) => b - a); // Sort in descending order
+
+    // Get the indexes of the top 3 values in the original array
+    const indexes = [];
+    for (let i = 0; i < 3; i++) {
+        const value = sortedArray[i];
+        const index = array.indexOf(value);
+        indexes.push(index);
+    }
+    
+    return indexes;
+}
+
 
     function chooseOption(choice) {
         if (choice == 1) {
@@ -232,10 +258,20 @@ button {
             document.getElementById("option1").innerHTML = options[currentIndex];
             document.getElementById("option2").innerHTML = options[currentIndex + 1];
         } else {
-            document.getElementById("result").classList.add("button-animation"); // Add animation class to result
+            const top3Indexes = getTop3Indexes(current_responses);
+        
+            document.getElementById("result1").classList.add("button-animation"); // Add animation class to result
+            document.getElementById("result2").classList.add("button-animation"); // Add animation class to result
+            document.getElementById("result3").classList.add("button-animation"); // Add animation class to result
+            document.getElementById("results_com").classList.add("button-animation"); // Add animation class to result
             document.getElementById("options").style.display = "none";
-            document.getElementById("result").innerHTML += "<br>" +  significados[current_responses.indexOf(Math.max(...current_responses))] + "</br>" ; 
-            document.getElementById("result").style.display = "block";
+            document.getElementById("result1").innerHTML += "1. " + significados[top3Indexes[0]]; 
+            document.getElementById("result2").innerHTML += "2. " + significados[top3Indexes[1]]; 
+            document.getElementById("result3").innerHTML += "3. " + significados[top3Indexes[2]]; 
+            document.getElementById("results_com").style.display = "block";
+            document.getElementById("result1").style.display = "block";
+            document.getElementById("result2").style.display = "block";
+            document.getElementById("result3").style.display = "block";
         }
     }
 </script>
