@@ -114,6 +114,50 @@
             align-items: center;
         }
 
+        /* Toggle Switch Styling */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-label {
+            color: #e2e8f0;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #4a5568;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: 2px solid #667eea;
+        }
+
+        .toggle-switch.active {
+            background: #667eea;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(28px);
+        }
+
         .order-btn {
             background: #38a169;
             color: white;
@@ -132,6 +176,114 @@
 
         .order-btn.active {
             background: #276749;
+        }
+
+        /* Welcome Screen Styling */
+        .welcome-screen {
+            padding: 40px;
+            background: #2d3748;
+        }
+
+        .welcome-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-title {
+            color: #667eea;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .guidelines-section {
+            background: #1a202c;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #4a5568;
+        }
+
+        .guidelines-title {
+            color: #e2e8f0;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guidelines-content {
+            color: #cbd5e0;
+            line-height: 1.7;
+        }
+
+        .guidelines-content h3 {
+            color: #667eea;
+            margin: 15px 0 8px 0;
+            font-size: 1.1em;
+        }
+
+        .guidelines-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .guidelines-content li {
+            margin: 5px 0;
+        }
+
+        .guidelines-content strong {
+            color: #e2e8f0;
+        }
+
+        .controls-section {
+            background: #1a202c;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #4a5568;
+        }
+
+        .controls-title {
+            color: #e2e8f0;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls-list {
+            color: #cbd5e0;
+            line-height: 1.7;
+        }
+
+        .controls-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .controls-list li {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-shortcut {
+            background: #4a5568;
+            color: #e2e8f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+            border: 1px solid #667eea;
         }
 
         .main-content {
@@ -661,6 +813,12 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            .toggle-container {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -685,19 +843,54 @@
                     <label for="fileInput" class="file-label">📁 Load Dataset</label>
                 </div>
                 
-                <div class="order-controls">
-                    <span style="font-weight: 600; color: #495057;">Order:</span>
-                    <button class="order-btn active" id="forwardBtn" onclick="setOrder('forward')">Forward</button>
-                    <button class="order-btn" id="backwardBtn" onclick="setOrder('backward')">Backward</button>
+                <div class="toggle-container">
+                    <span class="toggle-label">Normal Order</span>
+                    <div class="toggle-switch" id="orderToggle" onclick="toggleOrder()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span class="toggle-label">Reverse Order</span>
                 </div>
                 
                 <button class="order-btn" onclick="downloadDataset()" id="downloadBtn" disabled>💾 Download Results</button>
             </div>
         </div>
 
+        <div id="welcomeScreen" class="welcome-screen">
+            <div class="welcome-content">
+                <h2 class="welcome-title">Welcome to DPO Dataset Annotation Tool</h2>
+                
+                <div class="guidelines-section">
+                    <h3 class="guidelines-title">📋 Annotation Guidelines</h3>
+                    <div class="guidelines-content">
+                        <p>When comparing responses, consider the following criteria:</p>
+                        <ul>
+                        <li>The most important goal of manually labeling is to generate <strong>meaningful</strong> comparisons. In case of doubt, <strong>always discard the pair</strong>.</li>
+                        <li><strong>Natural reading flow</strong>. The advertisement should feel like a <strong>seamless part</strong> of the response, not an interruption. When responses are very similar in quality, focus on which maintains <strong>better contextual flow</strong>.</li>
+                        <li><strong>Preserve completeness</strong>. The original response's helpfulness and information must remain <strong>fully intact</strong>. If the advertisement changes the response's meaning or helpfulness, <strong>reject the pair</strong>.</li>
+                        <li><strong>Smooth transitions</strong>. The product mention should integrate naturally within existing sentence structure. Avoid responses with <strong>abrupt topic changes</strong> or obvious commercial insertions.</li>
+                        <li><strong>Contextual relevance</strong>. The product mention should relate meaningfully to the user's question and add apparent value, not feel <strong>forced or unrelated</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="controls-section">
+                    <h3 class="controls-title">⌨️ Keyboard Shortcuts</h3>
+                    <div class="controls-list">
+                        <ul>
+                            <li><span class="key-shortcut">1</span> Select Response A</li>
+                            <li><span class="key-shortcut">2</span> Select Response B</li>
+                            <li><span class="key-shortcut">G</span> Mark both as good</li>
+                            <li><span class="key-shortcut">B</span> Mark both as bad</li>
+                            <li><span class="key-shortcut">←</span> <span class="key-shortcut">→</span> Navigate between items</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="main-content">
-            <div id="loadingScreen" class="loading">
-                Please load a dataset to begin annotation
+            <div id="loadingScreen" class="loading" style="display: none;">
+                Please load a dataset to begin annotation.
             </div>
 
             <div id="annotationScreen" style="display: none;">
@@ -794,10 +987,15 @@
             return `dpo_dataset_${hash}`;
         }
 
-        function setOrder(newOrder) {
-            order = newOrder;
-            document.getElementById('forwardBtn').classList.toggle('active', order === 'forward');
-            document.getElementById('backwardBtn').classList.toggle('active', order === 'backward');
+        function toggleOrder() {
+            const toggle = document.getElementById('orderToggle');
+            toggle.classList.toggle('active');
+            
+            if (toggle.classList.contains('active')) {
+                order = 'backward';
+            } else {
+                order = 'forward';
+            }
             
             if (dataset.length > 0) {
                 // Find first unannotated item in the new order
@@ -859,6 +1057,7 @@
                             }
                         }
                         
+                        document.getElementById('welcomeScreen').style.display = 'none';
                         document.getElementById('loadingScreen').style.display = 'none';
                         document.getElementById('annotationScreen').style.display = 'block';
                         document.getElementById('downloadBtn').disabled = false;
@@ -941,72 +1140,7 @@
             if (!companyName || !text) return text;
             
             // Create a case-insensitive regex to find the company name
-            const regex = new RegExp(`\\b${companyName.replace(/[.*+?^${}()|[\]\\]/g, '\\')}\\b`, 'gi');
-            function displayCurrentItem() {
-            if (dataset.length === 0) return;
-
-            const item = dataset[currentIndex];
-            const question = item.metadata?.question || 'No question available';
-            const originalText = item.metadata?.original_answer || 'No original text available';
-            
-            // Render original text with markdown
-            const renderedOriginalText = marked.parse(originalText);
-            
-            document.getElementById('questionText').innerHTML = `
-                <strong>Question:</strong> ${question}<br><br>
-                <strong>Original Text:</strong><br>
-                <div class="original-text">${renderedOriginalText}</div>
-            `;
-
-            // Randomize response order for display
-            const showResponse1First = Math.random() < 0.5;
-            let responseAText, responseBText, responseAKey, responseBKey;
-            
-            if (showResponse1First) {
-                responseAText = item.response_1;
-                responseBText = item.response_2;
-                responseAKey = 'response_1';
-                responseBKey = 'response_2';
-            } else {
-                responseAText = item.response_2;
-                responseBText = item.response_1;
-                responseAKey = 'response_2';
-                responseBKey = 'response_1';
-            }
-
-            // Render responses with markdown
-            const renderedResponseA = marked.parse(responseAText);
-            const renderedResponseB = marked.parse(responseBText);
-
-            document.getElementById('responseAText').innerHTML = renderedResponseA;
-            document.getElementById('responseBText').innerHTML = renderedResponseB;
-            
-            // Store which response is which for later reference
-            document.getElementById('responseA').dataset.responseKey = responseAKey;
-            document.getElementById('responseB').dataset.responseKey = responseBKey;
-
-            // Update counters
-            document.getElementById('currentItem').textContent = currentIndex + 1;
-            document.getElementById('totalItems').textContent = dataset.length;
-
-            // Update navigation buttons - check if there are more unannotated items
-            const hasNextUnannotated = findNextUnannotated() !== currentIndex;
-            const hasPrevUnannotated = findPreviousUnannotated() !== -1;
-            
-            document.getElementById('prevBtn').disabled = !hasPrevUnannotated;
-            document.getElementById('nextBtn').disabled = !hasNextUnannotated;
-
-            // Reset selection
-            clearSelection();
-            
-            // Highlight if already annotated
-            if (item.preference) {
-                const statusElement = document.createElement('div');
-                statusElement.style.cssText = 'margin-top: 15px; padding: 10px; background: #2d3748; border-radius: 6px; color: #68d391; font-weight: 600; border: 1px solid #38a169;';
-                statusElement.textContent = `Already annotated: ${item.preference}`;
-                document.getElementById('questionText').appendChild(statusElement);
-            }
-        }
+            const regex = new RegExp(`\\b${companyName.replace(/[.*+?^${}()|[\]\\]/g, '\\                    <button class="nav-btn" id="nextBtn" onclick="nextItem')}\\b`, 'gi');
             return text.replace(regex, `<span class="highlighted-company">${companyName}</span>`);
         }
 
@@ -1210,9 +1344,11 @@
                     selectResponse('B');
                     break;
                 case 'g':
+                case 'G':
                     markBothGood();
                     break;
                 case 'b':
+                case 'B':
                     markBothBad();
                     break;
                 case 'ArrowLeft':
