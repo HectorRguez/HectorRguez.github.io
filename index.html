@@ -1139,10 +1139,35 @@
         function highlightCompanyName(text, companyName) {
             if (!companyName || !text) return text;
             
-            // Create a case-insensitive regex to find the company name
-            const regex = new RegExp(`\\b${companyName.replace(/[.*+?^${}()|[\]\\]/g, '\\                    <button class="nav-btn" id="nextBtn" onclick="nextItem')}\\b`, 'gi');
-            return text.replace(regex, `<span class="highlighted-company">${companyName}</span>`);
-        }
+            // Create a temporary div to parse the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = text;
+            
+            // Function to recursively process text nodes only
+            function processTextNodes(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const textContent = node.textContent;
+                    const escapedCompanyName = companyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const regex = new RegExp(`\\b${escapedCompanyName}\\b`, 'gi');
+                    
+                    if (regex.test(textContent)) {
+                        const span = document.createElement('span');
+                        span.innerHTML = textContent.replace(regex, `<span class="highlighted-company">${companyName}</span>`);
+                        node.parentNode.replaceChild(span, node);
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Don't process inside links, code blocks, or already highlighted elements
+                    if (!['A', 'CODE', 'PRE'].includes(node.tagName) && !node.classList.contains('highlighted-company')) {
+                        // Process child nodes (make a copy of the list since we might modify it)
+                        const children = Array.from(node.childNodes);
+                        children.forEach(child => processTextNodes(child));
+                    }
+                }
+            }
+            
+            processTextNodes(tempDiv);
+            return tempDiv.innerHTML;
+            }
 
         function displayCurrentItem() {
             if (dataset.length === 0) return;
